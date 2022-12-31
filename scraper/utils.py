@@ -1,6 +1,5 @@
 import json
 import re
-import csv
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.common.by import By
 
@@ -111,7 +110,7 @@ def scrape_from_files(my_dir: str):
             repos = get_repos_from_urls(url)
             print("Checking: ", url, "[repos]", repos)
             extras = {}
-            id_web=url.split("/")[-1]
+            id_web = url.split("/")[-1]
             for r in repos:
                 extra = extra_info_repo(r)
                 extras = extra
@@ -195,8 +194,7 @@ def get_repos_from_urls(url: str):
     return total_git_repos_valid
 
 
-
-def results_only_with_sources(file:str):
+def results_only_with_sources(file: str):
     with open(file, "r") as f:
         data = json.load(f)
 
@@ -207,4 +205,3 @@ def results_only_with_sources(file:str):
 
     with open("./data/result_only_with_sources.json", "w") as f:
         json.dump(result, f)
-    
