@@ -13,10 +13,8 @@ def get_directories_gitlab(repo_url):
 
     # Check the status code of the response
     if response.status_code != 200:
-        raise Exception(
-            f"Failed to retrieve contents of repository: \
-                {response.status_code} {response.reason}"
-        )
+        print("[get_directories_gitlab]response: ", response)
+        return []
 
     # Extract the list of directories from the response
     directories = [item["name"] for item in response.json() if item["type"] == "tree"]

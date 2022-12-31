@@ -111,12 +111,14 @@ def scrape_from_files(my_dir: str):
             repos = get_repos_from_urls(url)
             print("Checking: ", url, "[repos]", repos)
             extras = {}
+            id_web=url.split("/")[-1]
             for r in repos:
                 extra = extra_info_repo(r)
                 extras = extra
             result[f"{idx}"] = {
                 "url": url,
                 "sources": extras,
+                "id_web": f"{id_web}",
             }
             idx += 1
 
@@ -148,12 +150,14 @@ def filter_hrefs(urls: list):
 
 def remove_subpaths_in_url_repo(urls: list):
 
+    print("URLS: ", urls)
     # Compile the regular expression
     for u in urls:
         pattern = re.compile(r"^(https://[^/]+/[^/]+/[^/]+).*$")
         match = pattern.match(u)
-        base_url = match.group(1)
-        urls[urls.index(u)] = base_url
+        if match:
+            base_url = match.group(1)
+            urls[urls.index(u)] = base_url
 
     return urls
 
@@ -189,3 +193,18 @@ def get_repos_from_urls(url: str):
             continue
 
     return total_git_repos_valid
+
+
+
+def results_only_with_sources(file:str):
+    with open(file, "r") as f:
+        data = json.load(f)
+
+    result = {}
+    for k, v in data.items():
+        if v["sources"]:
+            result[k] = v
+
+    with open("./data/result_only_with_sources.json", "w") as f:
+        json.dump(result, f)
+    
