@@ -1,6 +1,6 @@
 import json
 import re
-
+import csv
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.common.by import By
 
@@ -60,41 +60,32 @@ def get_directories_from_repo(repo_url):
 
 
 def scan_all_items_from_gnomelook():
-    page = 133  # max 135 # starts 28
+    page = 28  # max 152 # starts 28
+    max_page=152
+    links = []
     while True:
-        result = {}
         print("Page: ", page)
         # newest necessary to only create new items
         url = f"http://www.gnome-look.org/browse?cat=135&page={page}&ord=newest"
         print("URL: ", url)
         driver.get(url)
-
         driver.implicitly_wait(5)
         hrefs = get_hrefs(driver, "/p/")
+        # merge links with hrefs into an array
+        print("hrefs: ", hrefs)
+        links = links + hrefs
         if len(hrefs) < 1:
             print("No more pages")
             break
-
-        for h in hrefs:
-            repos = get_repos_from_urls(h)
-            print("Checking: ", h, "[repos]", repos)
-            extras = {}
-            for r in repos:
-                extra = extra_info_repo(r)
-                extras = extra
-            result[page] = {
-                "url": h,
-                "sources": extras,
-            }
+        page += 1
+        if page==max_page:
             break
 
-        # result to json file
-        with open(f"./data/{page}.json", "w") as f:
-            json.dump(result, f, indent=4)
+    with open("./data/links.txt", "w") as f:
+        # Iterate over the list and write each element to the file
+        for item in links:
+            f.write(str(item) + '\n')
 
-        break
-
-        page += 1
 
 
 def get_hrefs(driver, url):
