@@ -61,7 +61,7 @@ def get_directories_from_repo(repo_url):
 
 def scan_all_items_from_gnomelook():
     page = 28  # max 152 # starts 28
-    max_page=152
+    max_page = 152
     links = []
     while True:
         print("Page: ", page)
@@ -78,14 +78,50 @@ def scan_all_items_from_gnomelook():
             print("No more pages")
             break
         page += 1
-        if page==max_page:
+        if page == max_page:
             break
 
     with open("./data/links.txt", "w") as f:
         # Iterate over the list and write each element to the file
         for item in links:
-            f.write(str(item) + '\n')
+            f.write(str(item) + "\n")
 
+
+def remove_duplicates_from_file(file_path: str):
+    with open(file_path, "r") as file:
+        lines = file.readlines()
+
+    lines = remove_duplicates_list(lines)
+
+    with open(file_path + "fixed", "w") as file:
+        for line in lines:
+            file.write(line)
+
+
+def scrape_from_files(my_dir: str):
+    idx = 0
+    result = {}
+    with open(my_dir, "r") as file:
+        for url in file:
+            if "www.gnome-look.org" not in url:
+                continue
+            print("Checking: ", url)
+            # remove new line
+            url = url.replace("\n", "")
+            repos = get_repos_from_urls(url)
+            print("Checking: ", url, "[repos]", repos)
+            extras = {}
+            for r in repos:
+                extra = extra_info_repo(r)
+                extras = extra
+            result[f"{idx}"] = {
+                "url": url,
+                "sources": extras,
+            }
+            idx += 1
+
+    with open("./data/result.json", "w") as f:
+        json.dump(result, f)
 
 
 def get_hrefs(driver, url):
