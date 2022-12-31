@@ -1,37 +1,8 @@
-from scraper.utils import get_repos_from_urls
-from selenium.webdriver.common.by import By
-
-def get_hrefs(driver, url):
-    hrefs = []
-    for a in driver.find_elements(By.TAG_NAME, "a"):
-        href = a.get_attribute("href")
-        if href and url in href:
-            hrefs.append(href)
-    return hrefs
+from scraper.utils import scan_all_items_from_gnomelook
+# from scraper.repos.github import get_zip_url_for_latest_sha
 
 
 if __name__ == "__main__":
 
-    # df  = pd.DataFrame(columns=['id',
-    #                             'name',
-    #                             'source',
-    #                             'description',
-    #                             'is_relative',
-    #                             'relative_path'])
-    url = "https://www.gnome-look.org/p/1099856/"
-    print(get_repos_from_urls(url))
-    # print("URL: ", url)
-    # driver.get(url)
-
-    # driver.implicitly_wait(5)
-    # # print(type(ids))
-    # # print(ids)
-
-    # # print(driver.page_source)
-
-    # hrefs = get_hrefs(driver, "github.com")
-    # if len(hrefs) < 1:
-    #     print("No more pages")
-
-    # for href in hrefs:
-    #     print("href: ", href)
+    scan_all_items_from_gnomelook()
+    # print(get_zip_url_for_latest_sha("https://github.com/B00merang-Project/System-4"))
